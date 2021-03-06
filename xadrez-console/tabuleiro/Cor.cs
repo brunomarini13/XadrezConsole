@@ -3,7 +3,7 @@
     enum Cor
     {
         Branca,
-        Petra,
+        Preta,
         Amarela,
         Azul,
         Vermelha,
