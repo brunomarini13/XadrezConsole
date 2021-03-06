@@ -10,12 +10,17 @@
 
         public Tabuleiro Tab { get; protected set; }
 
-        public Peca(Cor cor, Tabuleiro tab)
+        public Peca(Tabuleiro tab, Cor cor)
         {
             Posicao = null;
-            Cor = cor;
             Tab = tab;
+            Cor = cor;
             NumeroDeMovimentos = 0;
+        }
+
+        public void IncrementarQteMovimento()
+        {
+            NumeroDeMovimentos++;
         }
     }
 }
