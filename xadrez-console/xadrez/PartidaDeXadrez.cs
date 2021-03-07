@@ -138,6 +138,24 @@ namespace xadrez
         {
             Peca pecaCapturada = ExecutaMovimento(origem, destino);
 
+            Peca p = Tab.peca(destino);
+
+            // #JogadaEspecial promocao
+            if(p is Peao)
+            {
+                if (p.Cor == Cor.Branca && destino.Linha == 0 || p.Cor == Cor.Preta && destino.Linha == 7)
+                {
+                    p = Tab.RetirarPeca(destino);
+                    pecas.Remove(p);
+                    Peca dama = new Dama(Tab, p.Cor);
+                    Tab.colocarPeca(dama, destino);
+                    pecas.Add(dama);
+                }
+            } 
+
+
+
+
             if (estaEmXeque(JogadorAtual))
             {
                 desfazMovimento(origem, destino, pecaCapturada);
@@ -163,7 +181,7 @@ namespace xadrez
                 mudaJogador();
             }
 
-            Peca p = Tab.peca(destino);
+
 
             // #jogadaespecial En Passant
             if (p is Peao && (destino.Linha == origem.Linha - 2 || destino.Linha == origem.Linha + 2))
