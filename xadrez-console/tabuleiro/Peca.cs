@@ -41,6 +41,11 @@
             NumeroDeMovimentos++;
         }
 
+        public void DecrementarQteMovimento()
+        {
+            NumeroDeMovimentos--;
+        }
+
         public bool podeMoverPara(Posicao pos)
         {
             return movimentosPossiveis()[pos.Linha, pos.Coluna];
