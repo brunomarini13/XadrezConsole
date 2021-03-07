@@ -1,5 +1,6 @@
 ﻿using tabuleiro;
 using System;
+using System.Collections.Generic;
 
 namespace xadrez
 {
@@ -10,12 +11,17 @@ namespace xadrez
         public Cor JogadorAtual { get; private set; }
         public bool terminada { get; private set; }
 
+        private HashSet<Peca> pecas;
+        private HashSet<Peca> capturadas;
+
         public PartidaDeXadrez()
         {
             Tab = new Tabuleiro(8, 8);
             Turno = 1;
             JogadorAtual = Cor.Branca;
             terminada = false;
+            pecas = new HashSet<Peca>();
+            capturadas = new HashSet<Peca>();
             colocarPecas();
         }
 
@@ -25,6 +31,10 @@ namespace xadrez
             p.IncrementarQteMovimento();
             Peca pecaCapturada = Tab.RetirarPeca(destino);
             Tab.colocarPeca(p, destino);
+            if (pecaCapturada != null)  
+            {
+                capturadas.Add(pecaCapturada);
+            }
         }
 
         public void realizaJogada(Posicao origem, Posicao destino)
@@ -34,7 +44,7 @@ namespace xadrez
             mudaJogador();
         }
 
-        public void validarPosicaoOrigem (Posicao pos)
+        public void validarPosicaoOrigem(Posicao pos)
         {
             if (Tab.peca(pos) == null)
             {
@@ -70,20 +80,53 @@ namespace xadrez
             }
         }
 
+        public HashSet<Peca> pecasCapturadas(Cor cor)
+        {
+            HashSet<Peca> aux = new HashSet<Peca>();
+            foreach (Peca peca in capturadas)
+            {
+                if (peca.Cor == cor)
+                {
+                    aux.Add(peca);
+                }
+            }
+            return aux;   
+        }
+
+        public HashSet<Peca> pecasEmJogo(Cor cor)
+        {
+            HashSet<Peca> aux = new HashSet<Peca>();
+            foreach (Peca peca in pecas)
+            {
+                if (peca.Cor == cor)
+                {
+                    aux.Add(peca);
+                }
+            }
+            aux.ExceptWith(pecasCapturadas(cor));
+            return aux;
+        }
+
+        public void colocarNovaPeca(char coluna, int linha, Peca peca)
+        {
+            Tab.colocarPeca(peca, new PosicaoXadrez(coluna, linha).ToPosicao());
+            pecas.Add(peca);
+        }
 
         private void colocarPecas()
         {
-            Tab.colocarPeca(new Torre(Tab, Cor.Branca), new PosicaoXadrez('a', 1).ToPosicao());
-            Tab.colocarPeca(new Cavalo(Tab, Cor.Branca), new PosicaoXadrez('b', 1).ToPosicao());
-            Tab.colocarPeca(new Bispo(Tab, Cor.Branca), new PosicaoXadrez('c', 1).ToPosicao());
-            Tab.colocarPeca(new Dama(Tab, Cor.Branca), new PosicaoXadrez('d', 1).ToPosicao());
-            Tab.colocarPeca(new Rei(Tab, Cor.Branca), new PosicaoXadrez('e', 1).ToPosicao());
-            Tab.colocarPeca(new Bispo(Tab, Cor.Branca), new PosicaoXadrez('f', 1).ToPosicao());
-            Tab.colocarPeca(new Cavalo(Tab, Cor.Branca), new PosicaoXadrez('g', 1).ToPosicao());
-            Tab.colocarPeca(new Torre(Tab, Cor.Branca), new PosicaoXadrez('h', 1).ToPosicao());
-            Tab.colocarPeca(new Peao(Tab, Cor.Branca), new PosicaoXadrez('e', 2).ToPosicao());
-            Tab.colocarPeca(new Peao(Tab, Cor.Branca), new PosicaoXadrez('d', 2).ToPosicao());
-            Tab.colocarPeca(new Peao(Tab, Cor.Branca), new PosicaoXadrez('f', 2).ToPosicao());
+            colocarNovaPeca('a', 1, new Torre(Tab, Cor.Branca));
+            colocarNovaPeca('b', 1, new Cavalo(Tab, Cor.Branca));
+            colocarNovaPeca('c', 1, new Bispo(Tab, Cor.Branca));
+            colocarNovaPeca('d', 1, new Dama(Tab, Cor.Branca));
+            colocarNovaPeca('e', 1, new Rei(Tab, Cor.Branca));
+            colocarNovaPeca('f', 1, new Bispo(Tab, Cor.Branca));
+            colocarNovaPeca('g', 1, new Cavalo(Tab, Cor.Branca));
+            colocarNovaPeca('h', 1, new Torre(Tab, Cor.Branca));
+            colocarNovaPeca('e', 2, new Peao(Tab, Cor.Branca));
+            colocarNovaPeca('d', 2, new Peao(Tab, Cor.Branca));
+            colocarNovaPeca('f', 2, new Peao(Tab, Cor.Branca));
+
         }
 
     }
